@@ -61,7 +61,7 @@ app.get('/todos/:id', (req, res) => {
     });
 });
 
-app.delete('/todo/:id', (req, res) => {
+app.delete('/todos/:id', (req, res) => {
     var id = req.params.id;
 
     if (!ObjectID.isValid(id)) {
