@@ -1,4 +1,4 @@
-require('./config/config.js');
+require('./config/config');
 
 const _ = require('lodash');
 const express = require('express');
@@ -9,14 +9,13 @@ const {
 
 var {
     mongoose
-} = require('./db/mongoose.js');
+} = require('./db/mongoose');
 var {
     Todo
 } = require('./models/todo');
 var {
     User
 } = require('./models/user');
-
 var {
     authenticate
 } = require('./middleware/authenticate');
@@ -93,7 +92,7 @@ app.delete('/todos/:id', authenticate, (req, res) => {
             todo
         });
     }).catch((e) => {
-        res.status(404).send();
+        res.status(400).send();
     });
 });
 
@@ -142,7 +141,7 @@ app.post('/users', (req, res) => {
         res.header('x-auth', token).send(user);
     }).catch((e) => {
         res.status(400).send(e);
-    });
+    })
 });
 
 app.get('/users/me', authenticate, (req, res) => {

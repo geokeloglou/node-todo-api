@@ -13,7 +13,7 @@ var UserSchema = new mongoose.Schema({
         unique: true,
         validate: {
             validator: validator.isEmail,
-            message: `{VALUE} is not a valid email`
+            message: '{VALUE} is not a valid email'
         }
     },
     password: {
@@ -48,10 +48,10 @@ UserSchema.methods.generateAuthToken = function () {
         access
     }, process.env.JWT_SECRET).toString();
 
-    user.tokens = user.tokens.concat([{
+    user.tokens.push({
         access,
         token
-    }]);
+    });
 
     return user.save().then(() => {
         return token;
@@ -63,9 +63,11 @@ UserSchema.methods.removeToken = function (token) {
 
     return user.update({
         $pull: {
-            tokens: {token}
+            tokens: {
+                token
+            }
         }
-    })
+    });
 };
 
 UserSchema.statics.findByToken = function (token) {
@@ -73,7 +75,7 @@ UserSchema.statics.findByToken = function (token) {
     var decoded;
 
     try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET)
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
         return Promise.reject();
     }
@@ -87,13 +89,16 @@ UserSchema.statics.findByToken = function (token) {
 
 UserSchema.statics.findByCredentials = function (email, password) {
     var User = this;
-    
-    return User.findOne({email}).then((user) => {
+
+    return User.findOne({
+        email
+    }).then((user) => {
         if (!user) {
             return Promise.reject();
         }
 
         return new Promise((resolve, reject) => {
+            // Use bcrypt.compare to compare password and user.password
             bcrypt.compare(password, user.password, (err, res) => {
                 if (res) {
                     resolve(user);
@@ -118,11 +123,10 @@ UserSchema.pre('save', function (next) {
     } else {
         next();
     }
-
 });
 
 var User = mongoose.model('User', UserSchema);
 
 module.exports = {
     User
-};
+}
