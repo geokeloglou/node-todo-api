@@ -248,7 +248,6 @@ describe('POST /users', () => {
     });
 
     it('should return validation errors if request invalid', (done) => {
-
         request(app)
             .post('/users')
             .send({
