@@ -52,7 +52,6 @@ describe('POST /todos', () => {
             });
     });
 
-
     it('should not create todo with invalid body data', (done) => {
         request(app)
             .post('/todos')
@@ -71,7 +70,6 @@ describe('POST /todos', () => {
             });
     });
 });
-
 
 describe('GET /todos', () => {
     it('should get all todos', (done) => {
@@ -118,7 +116,7 @@ describe('GET /todos/:id', () => {
 
     it('should return 404 for non-object ids', (done) => {
         request(app)
-            .get('/todos/123abc}')
+            .get('/todos/123abc')
             .set('x-auth', users[0].tokens[0].token)
             .expect(404)
             .end(done);
@@ -167,7 +165,7 @@ describe('DELETE /todos/:id', () => {
             });
     });
 
-    it('should return a 404 if todo not found', (done) => {
+    it('should return 404 if todo not found', (done) => {
         var hexId = new ObjectID().toHexString();
 
         request(app)
@@ -179,7 +177,7 @@ describe('DELETE /todos/:id', () => {
 
     it('should return 404 if object id is invalid', (done) => {
         request(app)
-            .delete('/todos/123abc}')
+            .delete('/todos/123abc')
             .set('x-auth', users[1].tokens[0].token)
             .expect(404)
             .end(done);
@@ -189,7 +187,7 @@ describe('DELETE /todos/:id', () => {
 describe('PATCH /todos/:id', () => {
     it('should update the todo', (done) => {
         var hexId = todos[0]._id.toHexString();
-        var text = 'This should be a new text';
+        var text = 'This should be the new text';
 
         request(app)
             .patch(`/todos/${hexId}`)
@@ -204,12 +202,12 @@ describe('PATCH /todos/:id', () => {
                 expect(res.body.todo.completed).toBe(true);
                 expect(res.body.todo.completedAt).toBeA('number');
             })
-            .end(done)
+            .end(done);
     });
 
     it('should not update the todo created by other user', (done) => {
         var hexId = todos[0]._id.toHexString();
-        var text = 'This should be a new text';
+        var text = 'This should be the new text';
 
         request(app)
             .patch(`/todos/${hexId}`)
@@ -219,12 +217,12 @@ describe('PATCH /todos/:id', () => {
                 text
             })
             .expect(404)
-            .end(done)
+            .end(done);
     });
 
     it('should clear completedAt when todo is not completed', (done) => {
         var hexId = todos[1]._id.toHexString();
-        var text = 'This should be a new text!!!';
+        var text = 'This should be the new text!!';
 
         request(app)
             .patch(`/todos/${hexId}`)
@@ -239,8 +237,7 @@ describe('PATCH /todos/:id', () => {
                 expect(res.body.todo.completed).toBe(false);
                 expect(res.body.todo.completedAt).toNotExist();
             })
-            .end(done)
-
+            .end(done);
     });
 });
 
@@ -298,7 +295,6 @@ describe('POST /users', () => {
                     done();
                 }).catch((e) => done(e));
             });
-
     });
 
     it('should return validation errors if request invalid', (done) => {
@@ -312,7 +308,7 @@ describe('POST /users', () => {
             .end(done);
     });
 
-    it('should not create users if email in use', (done) => {
+    it('should not create user if email in use', (done) => {
         request(app)
             .post('/users')
             .send({
